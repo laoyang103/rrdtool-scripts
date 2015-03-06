@@ -1,7 +1,7 @@
 #!/bin/bash
 
 pid_list=2147483647
-proc_list="java mysqld ipmtube ipms rrdcached"
+proc_list="java mysqld ipmtube ipms tcpreplay rrdcached"
 output_times=100
 
 for proc in $proc_list; do

@@ -5,17 +5,14 @@ MEM=1
 PRRD_DIR=/data/kpi/ipm/rrd/proc/
 PRRD_FIELD=("cpu" "mem")
 PRRD_FIELD_LEN=2
-PROC_LIST=("java" "mysqld" "ipmtube" "ipms" "rrdcached")
-PROC_LIST_LEN=5
-PNG_HEIGHT=334
-PNG_WIDTH=543
+PROC_LIST=("java" "mysqld" "ipmtube" "ipms" "tcpreplay" "rrdcached")
+PROC_LIST_LEN=6
 
 echo "Content-Type: text/html"
 echo ""
 echo "<HTML>"
 echo "<HEAD><TITLE>RRDCGI Demo</TITLE></HEAD>"
 echo "<BODY>"
-echo "<H1>RRDCGI Example Page</H1>"
 echo "<P>"
 
 for ((i = 0; i < $PROC_LIST_LEN; i++)); do
@@ -29,17 +26,16 @@ for ((i = 0; i < $PROC_LIST_LEN; i++)); do
         test -e $rrd_name && rrdtool graph $png_name\
                     --title="$proc_name $field_name load" \
                     --start=-930s --end -5s \
-                    -h 334 -w 543 -l 0 -a PNG -X 0 \
+                    -h 100 -w 243 -l 0 -a PNG -X 0 \
                     DEF:x1=$rrd_name:VALUE:AVERAGE \
                     VDEF:min=x1,MINIMUM \
                     VDEF:max=x1,MAXIMUM \
                     VDEF:avg=x1,AVERAGE \
                     VDEF:lst=x1,LAST \
-                    "COMMENT: \l" \
-                    "COMMENT:                  Minimum" \
-                    "COMMENT:           Maximum" \
-                    "COMMENT:         Average" \
-                    "COMMENT:           Current" \
+                    "COMMENT:\t Min" \
+                    "COMMENT:    Max" \
+                    "COMMENT:    Ave" \
+                    "COMMENT:    Cur" \
                     "COMMENT: \l" \
                     AREA:x1#EDA362:${PRRD_FIELD[$j]}  \
                     "GPRINT:min:%5.2lf " \
