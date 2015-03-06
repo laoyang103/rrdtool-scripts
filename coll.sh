@@ -5,11 +5,19 @@ MEM=1
 PRRD_DIR=/data/kpi/ipm/rrd/proc/
 PRRD_FIELD=("cpu" "mem")
 PRRD_FIELD_LEN=2
+START_TIME=`date +%s`
+LIFE_TIME=300
 
 test -n $PRRD_DIR && mkdir -p $PRRD_DIR
 
 while true; do
-    read line
+    read -t 10 line
+
+    now=`date +%s`
+    if [ `expr $now - $START_TIME` -gt $LIFE_TIME ]; then
+        exit
+    fi
+
     # process row start with pid 
     pid=`echo $line | grep '^ *[0-9][0-9]*' | awk '{ print $1 }'`
     if [ -n "$pid" ]; then
@@ -19,7 +27,6 @@ while true; do
 
         echo $pname"---"${pdata[$CPU]}"---"${pdata[$MEM]}
 
-        now=`date +%s`
         for ((i = 0; i < $PRRD_FIELD_LEN; i++)); do
             prrd_name=$PRRD_DIR$pname"_"${PRRD_FIELD[$i]}".rrd"
             if [ ! -e $prrd_name ]; then
