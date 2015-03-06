@@ -6,7 +6,7 @@
 
 rrdtool=$(which rrdtool);
 db=/var/lib/rrd/network.rrd
-img=/var/www/stats
+img=/var/www/html/stats
 if=eth0
 
 if [ ! -e $db ]

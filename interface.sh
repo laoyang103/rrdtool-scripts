@@ -7,7 +7,7 @@
 rrdtool=$(which rrdtool);
 db0=/var/lib/rrd/eth0.rrd
 db1=/var/lib/rrd/eth1.rrd
-img=/var/www/stats
+img=/var/www/html/stats
 
 if [ ! -e $db0 ]
 then 

@@ -6,7 +6,7 @@
 
 rrdtool=$(which rrdtool);
 db=/var/lib/rrd/memory.rrd
-img=/var/www/stats
+img=/var/www/html/stats
 
 if [ ! -e $db ]
 then 
