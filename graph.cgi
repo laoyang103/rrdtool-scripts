@@ -11,10 +11,31 @@ PROC_LIST_LEN=6
 echo "Content-Type: text/html"
 echo ""
 echo "<HTML>"
-echo "<HEAD><TITLE>RRDCGI Demo</TITLE></HEAD>"
+echo "<HEAD><TITLE>The key process status</TITLE></HEAD>"
 echo "<BODY>"
 echo "<P>"
 
+# parse post or get param
+SAVEIFS=$IFS
+IFS='=&'
+[ -z "$QUERY_STRING" ] && read -t 1 QUERY_STRING
+PARAM=($QUERY_STRING)
+IFS=$SAVEIFS
+for ((i = 0; i < ${#PARAM[@]}; i+=2)); do
+    declare param_${PARAM[i]}=${PARAM[i+1]}
+done
+
+# parse start and end timestamp
+FETCH_START_TSS=-930s
+FETCH_END_TSS=-3s
+[[ $param_start_tss =~ ^[0-9][0-9]*$ ]] && FETCH_START_TSS=$param_start_tss
+[[ $param_end_tss   =~ ^[0-9][0-9]*$ ]] && FETCH_END_TSS=$param_end_tss
+
+# debug echo
+echo $FETCH_START_TSS
+echo $FETCH_END_TSS
+
+# graph all process cpu and memory load image
 for ((i = 0; i < $PROC_LIST_LEN; i++)); do
     for ((j = 0; j < $PRRD_FIELD_LEN; j++)); do
         proc_name=${PROC_LIST[$i]}
@@ -25,7 +46,7 @@ for ((i = 0; i < $PROC_LIST_LEN; i++)); do
 
         test -e $rrd_name && rrdtool graph $png_name\
                     --title="$proc_name $field_name load" \
-                    --start=-930s --end -5s \
+                    --start=$FETCH_START_TSS --end $FETCH_END_TSS \
                     -h 100 -w 243 -l 0 -a PNG -X 0 \
                     DEF:x1=$rrd_name:VALUE:AVERAGE \
                     VDEF:min=x1,MINIMUM \
@@ -52,4 +73,4 @@ done
 echo "</BODY>"
 echo "</HTML>"
 
-# */5 * * * * /bin/bash killall -9 coll.sh;/opt/apache-tomcat-6.0.37/webapps/examples/WEB-INF/cgi/probe.sh | /opt/apache-tomcat-6.0.37/webapps/examples/WEB-INF/cgi/coll.sh
+# */5 * * * * /bin/bash /opt/apache-tomcat-6.0.37/webapps/examples/WEB-INF/cgi/probe.sh | /opt/apache-tomcat-6.0.37/webapps/examples/WEB-INF/cgi/coll.sh
