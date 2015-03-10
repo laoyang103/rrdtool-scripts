@@ -4,6 +4,8 @@ RRD_DIR=/data/kpi/ipm/rrd/proc/
 RRD_LIST=`basename -a $(ls $RRD_DIR/*.rrd)`
 PNG_HEIGHT=100
 PNG_WIDTH=243
+WEB_DIR="../"
+PHY_DIR="../../"
 
 echo "Content-Type: text/html"
 echo ""
@@ -36,8 +38,8 @@ for rrd in $RRD_LIST; do
     rrd_name=$RRD_DIR$rrd
     png_name=${rrd/.rrd/.png}
 
-    test -e $rrd_name && rrdtool graph $png_name\
-                --title="$proc_name $field_name load" \
+    test -e $rrd_name && rrdtool graph $PHY_DIR$png_name\
+                --title="${png_name/_/ /} load" \
                 --start=$FETCH_START_TSS --end $FETCH_END_TSS \
                 -l 0 -a PNG -X 0 \
                 -h $PNG_HEIGHT -w $PNG_WIDTH \
@@ -57,8 +59,8 @@ for rrd in $RRD_LIST; do
                 "GPRINT:avg:%5.2lf " \
                 "GPRINT:lst:%5.2lf " > /dev/null
 
-    if test -e $png_name; then
-        echo "<IMG SRC="../$png_name" >"
+    if test -e $PHY_DIR$png_name; then
+        echo "<IMG SRC="$WEB_DIR$png_name" >"
     fi
 done
 
