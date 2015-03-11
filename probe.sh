@@ -1,13 +1,13 @@
 #!/bin/bash
 
 pid_list=2147483647
-proc_list="java mysqld ipmtube ipms tcpreplay rrdcached"
+proc_list="java mysqld ipmtube ipms"
 output_times=100
 
 for proc in $proc_list; do
-    pid=`ps -e | grep $proc | sed -n 1,1p | awk '{ print $1 }'`
-    if [ $pid ]; then
-        pid_list=$pid_list","$pid
+    pids=`ps -e | grep $proc | awk '{ print $1 }' | xargs | sed 's/ /,/g'`
+    if [ $pids ]; then
+        pid_list=$pid_list","$pids
     fi
 done
 

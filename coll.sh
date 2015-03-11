@@ -28,9 +28,9 @@ while true; do
         echo $pname"---"${pdata[$CPU]}"---"${pdata[$MEM]}
 
         for ((i = 0; i < $PRRD_FIELD_LEN; i++)); do
-            prrd_name=$PRRD_DIR$pname"_"${PRRD_FIELD[$i]}".rrd"
+            prrd_name=$PRRD_DIR$pname"_"${PRRD_FIELD[$i]}"_"$pid".rrd"
             if [ ! -e $prrd_name ]; then
-                rrdtool create $prrd_name --start $now --step 3 DS:VALUE:GAUGE:90:U:U RRA:AVERAGE:0.5:1:1440
+                rrdtool create $prrd_name --start $now --step 3 DS:VALUE:GAUGE:90:U:U RRA:AVERAGE:0.5:1:57600
             fi
             echo "rrdtool update $prrd_name $now:${pdata[$i]}"
             rrdtool update $prrd_name $now:${pdata[$i]}
