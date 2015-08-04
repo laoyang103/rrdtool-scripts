@@ -1,7 +1,7 @@
 #!/bin/bash
 
 RRD_DIR=/data/kpi/ipm/rrd/proc/
-RRD_LIST=`basename -a $(ls $RRD_DIR/*.rrd)`
+RRD_LIST=`ls -al $RRD_DIR/*.rrd | cut -d ' ' -f 11 | cut -d '/' -f 8`
 PNG_HEIGHT=100
 PNG_WIDTH=243
 WEB_DIR="../"
