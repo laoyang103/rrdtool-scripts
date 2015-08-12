@@ -21,7 +21,7 @@ while true; do
     # CPU row start with string "%Cpu(s)"
     is_cpu=`echo $line | grep 'Cpu'`
     if [ -n "$is_cpu" ]; then
-        cpu_array=(`echo $line | cut -f 2 -d ':' | sed 's/,//g'`)
+        cpu_array=(`echo $line | cut -f 2 -d ':' | sed 's/,//g' | sed 's/%/ /g'`)
         for ((i = 0; i < ${#cpu_array[@]}; i+=2)); do
             crrd_name=$PRRD_DIR"cpu_"${cpu_array[$i+1]}".rrd"
             if [ ! -e $crrd_name ]; then
@@ -49,4 +49,3 @@ while true; do
         done
     fi
 done
-
